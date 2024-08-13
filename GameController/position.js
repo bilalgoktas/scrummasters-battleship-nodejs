@@ -8,6 +8,9 @@ class Position {
         return this.column.toString() + this.row.toString()
     }
 
+    isValid() {
+        return this.row <= 8 && this.column <= 8
+    }
 }
 
 module.exports = Position;
