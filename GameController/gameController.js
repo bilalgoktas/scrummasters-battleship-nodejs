@@ -13,15 +13,15 @@ class GameController {
     }
 
     static CheckIsHit(ships, shot) {
-        if (shot == undefined)
+        if (shot === undefined)
             throw "The shooting position is not defined";
-        if (ships == undefined)
+        if (ships === undefined)
             throw "No ships defined";
-        var returnvalue = false;
+        var returnvalue = null;
         ships.forEach(function (ship) {
             ship.positions.forEach(position => {
-                if (position.row == shot.row && position.column == shot.column)
-                    returnvalue = true;
+                if (position.row === shot.row && position.column === shot.column)
+                    returnvalue = ship;
             });
         });
         return returnvalue;
@@ -29,6 +29,22 @@ class GameController {
 
     static isShipValid(ship) {
         return ship.positions.length == ship.size;
+    }
+
+    static DamageShip(ships, position, hitShip ) {
+        var isHitIndex = ships.indexOf(hitShip);
+
+        ships[isHitIndex].positions.forEach(function(pos, index, arr) {
+            if (position.column === pos.column && position.row === pos.row) {
+                arr.splice(index, 1)
+            }
+        });
+
+        if (ships[isHitIndex].positions.length === 0) {
+            ships.splice(isHitIndex, 1);
+        }
+
+        return ships;
     }
 }
 

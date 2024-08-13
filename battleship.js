@@ -56,6 +56,8 @@ class Battleship {
             telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: isHit}});
 
             if (isHit) {
+                gameController.DamageShip(this.enemyFleet, position, isHit);
+
                 beep();
 
                 console.log("                \\         .  ./");
@@ -78,6 +80,7 @@ class Battleship {
             console.log();
             console.log(`Computer shot in ${computerPos.column}${computerPos.row} and ` + (isHit ? `has hit your ship !` : `miss`));
             if (isHit) {
+                gameController.DamageShip(this.myFleet, computerPos, isHit);
                 beep();
 
                 console.log("                \\         .  ./");
@@ -90,7 +93,13 @@ class Battleship {
                 console.log("                   \\  \\   /  /");
             }
         }
-        while (true);
+        while (this.enemyFleet.length > 0 && this.myFleet.length > 0);
+
+        if (this.enemyFleet.length === 0) {
+            console.log("You are the winner!");
+        } else if (this.myFleet.length === 0) {
+            console.log("You lost");
+        }
     }
 
     static ParsePosition(input) {
