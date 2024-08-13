@@ -9,7 +9,8 @@ let telemetryWorker;
 
 class Battleship {
     start() {
-        telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");   
+        telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");
+
 
         console.log("Starting...");
         telemetryWorker.postMessage({eventName: 'ApplicationStarted', properties:  {Technology: 'Node.js'}});
@@ -28,12 +29,21 @@ class Battleship {
         console.log(cliColor.magenta("|                        Welcome to Battleship                         BB-61/"));
         console.log(cliColor.magenta(" \\_________________________________________________________________________|"));
         console.log();
+        console.log(cliColor.yellow('|||||| 📖INTRODUCTION |||||||'))
+        console.log(cliColor.magenta(`
+        Battleship ⛴️ is a classic strategy game where players try to sink each other\'s hidden ships. 
+        Each player strategically places their ships on a grid and takes turns guessing coordinates to attack.
+        The goal is to sink all of your opponent\'s ships before they sink yours. 🚢💥`))
 
+        readline.question("Press enter to setup your fleet")
         this.InitializeGame();
         this.StartGame();
     }
 
     StartGame() {
+
+        readline.question("Are you ready? Press enter to start the game")
+
         console.clear();
         console.log("                  __");
         console.log("                 /  \\");
@@ -46,10 +56,12 @@ class Battleship {
         console.log("   \\    \\_/");
         console.log("    \"\"\"\"");
 
+        console.log(cliColor.green('|||||| The battle has begun |||||||'))
+
         do {
             console.log();
-            console.log("Player, it's your turn");
-            console.log("Enter coordinates for your shot :");
+            console.log(cliColor.magenta("Player, it's your turn"))
+            console.log(cliColor.magenta("Enter coordinates for your shot :"))
             var position = Battleship.ParsePosition(readline.question());
             var isHit = gameController.CheckIsHit(this.enemyFleet, position);
 
@@ -68,16 +80,21 @@ class Battleship {
                 console.log("                   \\  \\   /  /");
             }
 
-            console.log(isHit ? "Yeah ! Nice hit !" : "Miss");
+            if (isHit) {
+                console.log(cliColor.green("Yeah ! Nice hit !⛴️💥"))
+            } else {
+                console.log(cliColor.yellow("Miss"))
+            }
 
             var computerPos = this.GetRandomPosition();
-            var isHit = gameController.CheckIsHit(this.myFleet, computerPos);
+            var hitByComputer = gameController.CheckIsHit(this.myFleet, computerPos);
 
             telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: isHit}});
 
             console.log();
-            console.log(`Computer shot in ${computerPos.column}${computerPos.row} and ` + (isHit ? `has hit your ship !` : `miss`));
-            if (isHit) {
+
+            if (hitByComputer) {
+                console.log(cliColor.red(`Computer shot in ${computerPos.column}${computerPos.row} and has hit your ship ! 💣`))
                 beep();
 
                 console.log("                \\         .  ./");
@@ -88,6 +105,8 @@ class Battleship {
                 console.log("            -   (\\- |  \\ /  |  /)  -");
                 console.log("                 -\\  \\     /  /-");
                 console.log("                   \\  \\   /  /");
+            } else {
+                console.log(cliColor.yellow(`Computer shot in ${computerPos.column}${computerPos.row} and missed 😮‍💨`))
             }
         }
         while (true);
@@ -117,6 +136,8 @@ class Battleship {
     InitializeMyFleet() {
         this.myFleet = gameController.InitializeShips();
 
+        console.log('')
+        console.log(cliColor.yellow('|||||| SETUP YOUR FLEET ⛴️ 🚢  |||||||'))
         console.log("Please position your fleet (Game board size is from A to H and 1 to 8) :");
 
         this.myFleet.forEach(function (ship) {
