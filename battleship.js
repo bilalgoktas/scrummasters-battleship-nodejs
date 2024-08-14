@@ -67,7 +67,17 @@ class Battleship {
             console.log();
             console.log(cliColor.magenta("Player, it's your turn"))
             console.log(cliColor.magenta("Enter coordinates for your shot :"))
-            var position = Battleship.ParsePosition(readline.question());
+            var position;
+            
+            try {
+              position = Battleship.ParsePosition(readline.question());
+
+            } catch (error) {
+              const lettersEnumArray = letters.enums;
+              console.log(`Your shot is out of range! The board size is ${this.maxRows}x${this.maxColumns}. (${lettersEnumArray[0]}-${lettersEnumArray[lettersEnumArray.length-1]}) Retry the shot i.e A3`);
+
+              continue
+            }
             var hitShip = gameController.CheckIsHit(this.enemyFleet, position);
 
             telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: hitShip}});
@@ -129,7 +139,7 @@ class Battleship {
     static ParsePosition(input) {
         var column = letters.get(input.toUpperCase().substring(0, 1));
         var row = parseInt(input.substring(1, 2), 10);
-        if(row <= 0) throw 'invalid_'
+        if(row <= 0) throw 'invalid_position'
         const pos = new position(column, row);
         if (!pos.isValid()) throw 'invalid_position'
         return pos
