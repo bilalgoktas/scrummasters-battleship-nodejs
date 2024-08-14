@@ -9,10 +9,12 @@ let telemetryWorker;
 
 class Battleship {
     start() {
+        this.maxRows = 8;
+        this.maxColumns = 8;
         telemetryWorker = new Worker("./TelemetryClient/telemetryClient.js");
 
         console.log("Starting...");
-        telemetryWorker.postMessage({eventName: 'ApplicationStarted', properties:  {Technology: 'Node.js'}});
+        telemetryWorker.postMessage({ eventName: 'ApplicationStarted', properties: { Technology: 'Node.js' } });
 
         console.log(cliColor.magenta("                                     |__"));
         console.log(cliColor.magenta("                                     |\\/"));
@@ -125,44 +127,94 @@ class Battleship {
     }
 
     static ParsePosition(input) {
-        var letter = letters.get(input.toUpperCase().substring(0, 1));
-        var number = parseInt(input.substring(1, 2), 10);
-        return new position(letter, number);
+        var column = letters.get(input.toUpperCase().substring(0, 1));
+        var row = parseInt(input.substring(1, 2), 10);
+        if(row <= 0) throw 'invalid_'
+        const pos = new position(column, row);
+        if (!pos.isValid()) throw 'invalid_position'
+        return pos
+
     }
 
     GetRandomPosition() {
-        var rows = 8;
-        var lines = 8;
-        var rndColumn = Math.floor((Math.random() * lines));
-        var letter = letters.get(rndColumn + 1);
-        var number = Math.floor((Math.random() * rows));
-        var result = new position(letter, number);
+        var rndColumn = Math.floor((Math.random() * this.maxColumns));
+        var column = letters.get(rndColumn + 1);
+        var row = Math.floor((Math.random() * this.maxRows));
+        var result = new position(column, row);
         return result;
     }
 
+    AddShipToBoard(ship) {
+        if(ship.positions.length !== ship.size) throw 'invalid_ship_size'
+        ship.positions.forEach((position) => this.board[position.column][position.row] = true);
+    }
+
     InitializeGame() {
+        this.InitializeBoard()
         this.InitializeMyFleet();
         this.InitializeEnemyFleet();
     }
 
+    InitializeBoard() {
+        this.board = {}
+        for (let i = 1; i <= this.maxColumns; i++) {
+            this.board[letters.get(i)] = {}
+            for (let j = 1; j <= this.maxRows; j++) {
+                this.board[letters.get(i)][j] = false
+            }
+        }
+    }
+
+    isPositionOccupied({column, row}) {
+        return this.board[column.key] && this.board[column.key][row] !== false
+    }
+
+    reservePosition({column, row}) {
+        this.board[column.key][row] = true
+    }
+
+    clearReservedPositions(positions) {
+        positions.forEach(({column, row}) => this.board[column.key][row] = false)
+    }
+    
     InitializeMyFleet() {
         this.myFleet = gameController.InitializeShips();
 
         console.log('')
         console.log(cliColor.yellow('|||||| SETUP YOUR FLEET ⛴️ 🚢  |||||||'))
         console.log("Please position your fleet (Game board size is from A to H and 1 to 8) :");
-
+    
         this.myFleet.forEach(function (ship) {
+            const reservedPositions = []
             console.log();
             console.log(`Please enter the positions for the ${ship.name} (size: ${ship.size})`);
-            for (var i = 1; i < ship.size + 1; i++) {
-                    console.log(`Enter position ${i} of ${ship.size} (i.e A3):`);
-                    const position = readline.question();
-                    telemetryWorker.postMessage({eventName: 'Player_PlaceShipPosition', properties:  {Position: position, Ship: ship.name, PositionInShip: i}});
-                    ship.addPosition(Battleship.ParsePosition(position));
+            while (ship.positions.length < ship.size) {
+                console.log(`Enter position ${ship.positions.length + 1} of ${ship.size} (i.e A3):`);
+                const coordinates = readline.question();
+                try {
+                    const position = Battleship.ParsePosition(coordinates);
+                    if (this.isPositionOccupied(position)) {
+                        console.log();
+                        console.log("That position is already occupied by another ship. Please choose a different position.");
+                        continue;
+                    }
+                    ship.addPosition(position);
+                    this.reservePosition(position)
+                    reservedPositions.push(position)
+                    telemetryWorker.postMessage({ eventName: 'Player_PlaceShipPosition', properties: { Position: coordinates, Ship: ship.name, PositionInShip: ship.positions.length } });
+                } catch (error) {
+                    console.log();
+                    console.log(`That was an invalid position, please enter a position within the board`);
+                    console.log();
+                    console.log(`Current board size is : ${this.maxColumns} columns and ${this.maxRows} rows`);
+                    console.log();
+                    this.clearReservedPositions(reservedPositions)
+                }
             }
-        })
+            this.AddShipToBoard(ship);
+        }, this);
     }
+
 
     InitializeEnemyFleet() {
         this.enemyFleet = gameController.InitializeShips();
