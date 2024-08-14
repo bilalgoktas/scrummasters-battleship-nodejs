@@ -172,29 +172,29 @@ class Battleship {
     }
 
     InitializeDebugPlayerFleet() {
-        this.enemyFleet = gameController.InitializeShips();
+        this.myFleet = gameController.InitializeShips();
 
-        this.enemyFleet[0].addPosition(new position(letters.A, 4));
-        this.enemyFleet[0].addPosition(new position(letters.A, 5));
-        this.enemyFleet[0].addPosition(new position(letters.A, 6));
-        this.enemyFleet[0].addPosition(new position(letters.A, 7));
-        this.enemyFleet[0].addPosition(new position(letters.A, 8));
+        this.myFleet[0].addPosition(new position(letters.A, 4));
+        this.myFleet[0].addPosition(new position(letters.A, 5));
+        this.myFleet[0].addPosition(new position(letters.A, 6));
+        this.myFleet[0].addPosition(new position(letters.A, 7));
+        this.myFleet[0].addPosition(new position(letters.A, 8));
 
-        this.enemyFleet[1].addPosition(new position(letters.F, 6));
-        this.enemyFleet[1].addPosition(new position(letters.F, 7));
-        this.enemyFleet[1].addPosition(new position(letters.F, 8));
-        this.enemyFleet[1].addPosition(new position(letters.F, 9));
+        this.myFleet[1].addPosition(new position(letters.F, 6));
+        this.myFleet[1].addPosition(new position(letters.F, 7));
+        this.myFleet[1].addPosition(new position(letters.F, 8));
+        this.myFleet[1].addPosition(new position(letters.F, 9));
 
-        this.enemyFleet[2].addPosition(new position(letters.A, 9));
-        this.enemyFleet[2].addPosition(new position(letters.B, 9));
-        this.enemyFleet[2].addPosition(new position(letters.C, 9));
+        this.myFleet[2].addPosition(new position(letters.A, 9));
+        this.myFleet[2].addPosition(new position(letters.B, 9));
+        this.myFleet[2].addPosition(new position(letters.C, 9));
 
-        this.enemyFleet[3].addPosition(new position(letters.F, 2));
-        this.enemyFleet[3].addPosition(new position(letters.G, 2));
-        this.enemyFleet[3].addPosition(new position(letters.H, 2));
+        this.myFleet[3].addPosition(new position(letters.F, 2));
+        this.myFleet[3].addPosition(new position(letters.G, 2));
+        this.myFleet[3].addPosition(new position(letters.H, 2));
 
-        this.enemyFleet[4].addPosition(new position(letters.C, 1));
-        this.enemyFleet[4].addPosition(new position(letters.C, 2));
+        this.myFleet[4].addPosition(new position(letters.C, 1));
+        this.myFleet[4].addPosition(new position(letters.C, 2));
     }
 
     InitializeEnemyFleet() {
