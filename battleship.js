@@ -133,37 +133,6 @@ class Battleship {
         }
     }
 
-    // InitializeMyFleet() {
-    //     this.myFleet = gameController.InitializeShips();
-
-    //     console.log("Please position your fleet (Game board size is from A to H and 1 to 8) :");
-
-    //     this.myFleet.forEach(function (ship) {
-    //         console.log();
-    //         console.log(`Please enter the positions for the ${ship.name} (size: ${ship.size})`);
-    //         while (ship.positions.length < ship.size) {
-    //             console.log(`Enter position ${ship.positions.length + 1} of ${ship.size} (i.e A3):`);
-    //             const coordinates = readline.question();
-    //             try {
-    //                 const position = Battleship.ParsePosition(coordinates)
-    //                 // add a check too see if the ship is already in the position
-                    
-    //                 ship.addPosition(position);
-    //                 telemetryWorker.postMessage({ eventName: 'Player_PlaceShipPosition', properties: { Position: coordinates, Ship: ship.name, PositionInShip: ship.positions.length } });
-    //             } catch (error) {
-    //                 console.log()
-    //                 console.log(`That was an invalid positon, please enter a position within the board`);
-    //                 console.log()
-    //                 console.log(`Current board size is : ${global.maxColumns} columns and ${global.maxRows} rows`);
-    //                 console.log()
-    //                 console.log(`Enter position ${ship.positions.length + 1} of ${ship.size} (i.e A3):`);
-    //             }
-    //         }
-
-    //         this.AddShipToBoard(ship);
-    //     })
-    // }
-
     isPositionOccupied(board, position) {
         const { row, column } = position;
         if (board[row] && board[row][column] !== ' ') {
