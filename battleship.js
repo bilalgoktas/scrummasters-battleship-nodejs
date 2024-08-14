@@ -114,7 +114,7 @@ class Battleship {
 
     AddShipToBoard(ship) {
         if(ship.positions.length !== ship.size) throw 'invalid_ship_size'
-        ship.positions.forEach((position) => this.board[position.column][position.row] = ship.color);
+        ship.positions.forEach((position) => this.board[position.column][position.row] = true);
     }
 
     InitializeGame() {
@@ -128,17 +128,21 @@ class Battleship {
         for (let i = 1; i <= this.maxColumns; i++) {
             this.board[letters.get(i)] = {}
             for (let j = 1; j <= this.maxRows; j++) {
-                this.board[letters.get(i)][j] = ' '
+                this.board[letters.get(i)][j] = false
             }
         }
     }
 
-    isPositionOccupied(board, position) {
-        const { row, column } = position;
-        if (board[row] && board[row][column] !== ' ') {
-            return true;
-        }
-        return false;
+    isPositionOccupied({column, row}) {
+        return this.board[column.key] && this.board[column.key][row] !== false
+    }
+
+    reservePosition({column, row}) {
+        this.board[column.key][row] = true
+    }
+
+    clearReservedPositions(positions) {
+        positions.forEach(({column, row}) => this.board[column.key][row] = false)
     }
     
     InitializeMyFleet() {
@@ -147,6 +151,7 @@ class Battleship {
         console.log("Please position your fleet (Game board size is from A to H and 1 to 8) :");
     
         this.myFleet.forEach(function (ship) {
+            const reservedPositions = []
             console.log();
             console.log(`Please enter the positions for the ${ship.name} (size: ${ship.size})`);
             while (ship.positions.length < ship.size) {
@@ -154,12 +159,14 @@ class Battleship {
                 const coordinates = readline.question();
                 try {
                     const position = Battleship.ParsePosition(coordinates);
-                    if (this.isPositionOccupied(this.board, position)) {
+                    if (this.isPositionOccupied(position)) {
                         console.log();
                         console.log("That position is already occupied by another ship. Please choose a different position.");
                         continue;
                     }
                     ship.addPosition(position);
+                    this.reservePosition(position)
+                    reservedPositions.push(position)
                     telemetryWorker.postMessage({ eventName: 'Player_PlaceShipPosition', properties: { Position: coordinates, Ship: ship.name, PositionInShip: ship.positions.length } });
                 } catch (error) {
                     console.log('ERROR', error)
@@ -169,9 +176,9 @@ class Battleship {
                     console.log(`Current board size is : ${this.maxColumns} columns and ${this.maxRows} rows`);
                     console.log();
                     console.log(`Enter position ${ship.positions.length + 1} of ${ship.size} (i.e A3):`);
+                    this.clearReservedPositions(reservedPositions)
                 }
             }
-    
             this.AddShipToBoard(ship);
         }, this);
     }
