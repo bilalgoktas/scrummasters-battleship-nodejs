@@ -114,9 +114,7 @@ class Battleship {
 
     AddShipToBoard(ship) {
         if(ship.positions.length !== ship.size) throw 'invalid_ship_size'
-        ship.positions.forEach(function (position) {
-            this.board[position.column][position.row] = ship.color;
-        });
+        ship.positions.forEach((position) => this.board[position.column][position.row] = ship.color);
     }
 
     InitializeGame() {
