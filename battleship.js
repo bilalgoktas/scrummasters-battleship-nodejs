@@ -127,9 +127,10 @@ class Battleship {
     }
 
     static ParsePosition(input) {
-        var letter = letters.get(input.toUpperCase().substring(0, 1));
-        var number = parseInt(input.substring(1, 2), 10);
-        const pos = new position(letter, number);
+        var column = letters.get(input.toUpperCase().substring(0, 1));
+        var row = parseInt(input.substring(1, 2), 10);
+        if(row <= 0) throw 'invalid_'
+        const pos = new position(column, row);
         if (!pos.isValid()) throw 'invalid_position'
         return pos
 
@@ -137,9 +138,9 @@ class Battleship {
 
     GetRandomPosition() {
         var rndColumn = Math.floor((Math.random() * this.maxColumns));
-        var letter = letters.get(rndColumn + 1);
-        var number = Math.floor((Math.random() * this.maxRows));
-        var result = new position(letter, number);
+        var column = letters.get(rndColumn + 1);
+        var row = Math.floor((Math.random() * this.maxRows));
+        var result = new position(column, row);
         return result;
     }
 
@@ -202,13 +203,11 @@ class Battleship {
                     reservedPositions.push(position)
                     telemetryWorker.postMessage({ eventName: 'Player_PlaceShipPosition', properties: { Position: coordinates, Ship: ship.name, PositionInShip: ship.positions.length } });
                 } catch (error) {
-                    console.log('ERROR', error)
                     console.log();
                     console.log(`That was an invalid position, please enter a position within the board`);
                     console.log();
                     console.log(`Current board size is : ${this.maxColumns} columns and ${this.maxRows} rows`);
                     console.log();
-                    console.log(`Enter position ${ship.positions.length + 1} of ${ship.size} (i.e A3):`);
                     this.clearReservedPositions(reservedPositions)
                 }
             }
