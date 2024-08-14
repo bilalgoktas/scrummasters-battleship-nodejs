@@ -144,7 +144,8 @@ class Battleship {
         this.myMap = []
         this.enemyMap = []
 
-        this.InitializeMyFleet();
+        // this.InitializeMyFleet();
+        this.InitializeDebugPlayerFleet();
         this.InitializeEnemyFleet();
     }
 
@@ -168,6 +169,32 @@ class Battleship {
 
         this.updateMap(this.myFleet, this.myMap)
         this.showMap(this.myMap)
+    }
+
+    InitializeDebugPlayerFleet() {
+        this.enemyFleet = gameController.InitializeShips();
+
+        this.enemyFleet[0].addPosition(new position(letters.A, 4));
+        this.enemyFleet[0].addPosition(new position(letters.A, 5));
+        this.enemyFleet[0].addPosition(new position(letters.A, 6));
+        this.enemyFleet[0].addPosition(new position(letters.A, 7));
+        this.enemyFleet[0].addPosition(new position(letters.A, 8));
+
+        this.enemyFleet[1].addPosition(new position(letters.F, 6));
+        this.enemyFleet[1].addPosition(new position(letters.F, 7));
+        this.enemyFleet[1].addPosition(new position(letters.F, 8));
+        this.enemyFleet[1].addPosition(new position(letters.F, 9));
+
+        this.enemyFleet[2].addPosition(new position(letters.A, 9));
+        this.enemyFleet[2].addPosition(new position(letters.B, 9));
+        this.enemyFleet[2].addPosition(new position(letters.C, 9));
+
+        this.enemyFleet[3].addPosition(new position(letters.F, 2));
+        this.enemyFleet[3].addPosition(new position(letters.G, 2));
+        this.enemyFleet[3].addPosition(new position(letters.H, 2));
+
+        this.enemyFleet[4].addPosition(new position(letters.C, 1));
+        this.enemyFleet[4].addPosition(new position(letters.C, 2));
     }
 
     InitializeEnemyFleet() {
@@ -220,9 +247,11 @@ class Battleship {
 
     updateMap(ships, map) {
         ships.forEach(function(ship) {
+            console.log(ship);
             ship.positions.forEach(function(pos) {
-                console.log(pos.column)
-                map[pos.row][letters.get(pos.column.value) - 1] = 'x';
+                console.log(pos.column);
+                console.log(letters.getValue(pos.column.value));
+                // map[pos.row][letters.get(pos.column.value) - 1] = 'x';
             });
         })
         return map
