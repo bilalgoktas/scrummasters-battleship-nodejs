@@ -33,18 +33,33 @@ class GameController {
 
     static DamageShip(ships, position, hitShip ) {
         var isHitIndex = ships.indexOf(hitShip);
-
+        var hitCount = 0;
         ships[isHitIndex].positions.forEach(function(pos, index, arr) {
             if (position.column === pos.column && position.row === pos.row) {
-                arr.splice(index, 1)
+                ships[isHitIndex].positions[index].setHit();
             }
         });
-
-        if (ships[isHitIndex].positions.length === 0) {
-            ships.splice(isHitIndex, 1);
+        ships[isHitIndex].positions.forEach(function(item, index) {
+            if (item.hit) {
+                hitCount++
+            }
+        });
+        if (ships[isHitIndex].positions.length === hitCount) {
+            ships[isHitIndex].kill();
         }
 
         return ships;
+    }
+
+    static FleetHasShips(ships) {
+        var aliveShipCount = 0;
+        ships.forEach(function(item) {
+            if (item.isDead()) {
+                aliveShipCount++;
+            }
+        });
+
+        return aliveShipCount < ships.length;
     }
 }
 

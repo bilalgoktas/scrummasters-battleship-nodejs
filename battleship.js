@@ -51,12 +51,12 @@ class Battleship {
             console.log("Player, it's your turn");
             console.log("Enter coordinates for your shot :");
             var position = Battleship.ParsePosition(readline.question());
-            var isHit = gameController.CheckIsHit(this.enemyFleet, position);
+            var hitShip = gameController.CheckIsHit(this.enemyFleet, position);
 
-            telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: isHit}});
+            telemetryWorker.postMessage({eventName: 'Player_ShootPosition', properties:  {Position: position.toString(), IsHit: hitShip}});
 
-            if (isHit) {
-                gameController.DamageShip(this.enemyFleet, position, isHit);
+            if (hitShip) {
+                gameController.DamageShip(this.enemyFleet, position, hitShip);
 
                 beep();
 
@@ -70,17 +70,17 @@ class Battleship {
                 console.log("                   \\  \\   /  /");
             }
 
-            console.log(isHit ? "Yeah ! Nice hit !" : "Miss");
+            console.log(hitShip ? "Yeah ! Nice hit !" : "Miss");
 
             var computerPos = this.GetRandomPosition();
-            var isHit = gameController.CheckIsHit(this.myFleet, computerPos);
+            hitShip = gameController.CheckIsHit(this.myFleet, computerPos);
 
-            telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: isHit}});
+            telemetryWorker.postMessage({eventName: 'Computer_ShootPosition', properties:  {Position: computerPos.toString(), IsHit: hitShip}});
 
             console.log();
-            console.log(`Computer shot in ${computerPos.column}${computerPos.row} and ` + (isHit ? `has hit your ship !` : `miss`));
-            if (isHit) {
-                gameController.DamageShip(this.myFleet, computerPos, isHit);
+            console.log(`Computer shot in ${computerPos.column}${computerPos.row} and ` + (hitShip ? `has hit your ship !` : `miss`));
+            if (hitShip) {
+                gameController.DamageShip(this.myFleet, computerPos, hitShip);
                 beep();
 
                 console.log("                \\         .  ./");
@@ -93,11 +93,11 @@ class Battleship {
                 console.log("                   \\  \\   /  /");
             }
         }
-        while (this.enemyFleet.length > 0 && this.myFleet.length > 0);
+        while (gameController.FleetHasShips(this.enemyFleet) && gameController.FleetHasShips(this.myFleet));
 
-        if (this.enemyFleet.length === 0) {
+        if (gameController.FleetHasShips(this.myFleet)) {
             console.log("You are the winner!");
-        } else if (this.myFleet.length === 0) {
+        } else if (gameController.FleetHasShips(this.enemyFleet)) {
             console.log("You lost");
         }
     }
