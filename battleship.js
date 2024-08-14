@@ -36,7 +36,6 @@ class Battleship {
 
         readline.question("Press enter to setup your fleet")
 
-        this.showGrid()
         console.log(`
 🗺️ This is our playing field please use this as guide to place your ships
         `)
@@ -182,27 +181,7 @@ class Battleship {
         this.enemyFleet[4].addPosition(new position(letters.C, 6));
     }
 
-    showGrid() {
-        let rows = 8
-        let columns = ['A', 'B', 'C', 'D', 'E','F', 'G'];
-        let map = [];
 
-        for (let i = 0; i < 8; i++) {
-            //todo
-
-            if (i === 0) {
-                map.push(columns)
-            } else {
-                let temporaryRow = []
-                columns.forEach((columns) => {
-                    temporaryRow.push('🟦')
-                })
-                map.push(temporaryRow)
-            }
-        }
-
-        console.table(map)
-    }
 }
 
 module.exports = Battleship;
