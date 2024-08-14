@@ -141,6 +141,9 @@ class Battleship {
     }
 
     InitializeGame() {
+        this.myMap = []
+        this.enemyMap = []
+
         this.InitializeMyFleet();
         this.InitializeEnemyFleet();
     }
@@ -162,6 +165,9 @@ class Battleship {
                     ship.addPosition(Battleship.ParsePosition(position));
             }
         })
+
+        this.updateMap(this.myFleet, this.myMap)
+        this.showMap(this.myMap)
     }
 
     InitializeEnemyFleet() {
@@ -190,6 +196,37 @@ class Battleship {
         this.enemyFleet[4].addPosition(new position(letters.C, 6));
     }
 
+    showMap(map) {
+        let rows = 9
+        let columns = ['A', 'B', 'C', 'D', 'E','F', 'G'];
+
+        for (let i = 0; i < rows; i++) {
+
+            if (i === 0) {
+                map.push(columns)
+            } else {
+                let temporaryRow = []
+                columns.forEach((columns) => {
+                    temporaryRow.push('🟦')
+                    // perform check if hit has been placed
+                    // Perform check if boat is on this spot
+                })
+                map.push(temporaryRow)
+            }
+        }
+
+        console.table(map)
+    }
+
+    updateMap(ships, map) {
+        ships.forEach(function(ship) {
+            ship.positions.forEach(function(pos) {
+                console.log(pos.column)
+                map[pos.row][letters.get(pos.column.value) - 1] = 'x';
+            });
+        })
+        return map
+    }
 
 }
 
