@@ -147,6 +147,8 @@ class Battleship {
         // this.InitializeMyFleet();
         this.InitializeDebugPlayerFleet();
         this.InitializeEnemyFleet();
+        this.updateMap(this.myFleet,this.myMap);
+        this.showMap(this.myMap);
     }
 
     InitializeMyFleet() {
@@ -166,7 +168,7 @@ class Battleship {
                     ship.addPosition(Battleship.ParsePosition(position));
             }
         })
-
+        this.showMap(this.myMap)
         this.updateMap(this.myFleet, this.myMap)
         this.showMap(this.myMap)
     }
@@ -245,13 +247,18 @@ class Battleship {
         console.table(map)
     }
 
+
+
     updateMap(ships, map) {
+        // console.log(map);
         ships.forEach(function(ship) {
-            console.log(ship);
+            // console.log(ship);
             ship.positions.forEach(function(pos) {
-                console.log(pos.column);
-                console.log(letters.getValue(pos.column.value));
-                // map[pos.row][letters.get(pos.column.value) - 1] = 'x';
+                // console.log(pos.column);
+                // console.log(letters.getValue(pos.column.value));
+                var col = letters.getValue(pos.column.value);
+                // console.log(map);
+                // map[pos.row][col] = '🚢';
             });
         })
         return map
