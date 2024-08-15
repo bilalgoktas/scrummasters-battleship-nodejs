@@ -3,6 +3,8 @@ class Position {
         this.column = column;
         this.row = row;
         this.hit = false;
+        this.maxGridSize = 8;
+        this.offset = 1;
     }
 
     setHit() {
@@ -14,7 +16,7 @@ class Position {
     }
 
     isValid() {
-        return this.row <= 8 && this.column <= 8
+        return this.row - this.offset <= this.maxGridSize && this.column - this.offset <= this.maxGridSize;
     }
 }
 
