@@ -59,6 +59,8 @@ class GameController {
             }
         });
 
+        console.log(ships);
+        console.log(aliveShipCount);
         return aliveShipCount < ships.length;
     }
 }
