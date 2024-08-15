@@ -84,7 +84,6 @@ class Battleship {
 
             if (hitShip) {
                 gameController.DamageShip(this.enemyFleet, position, hitShip);
-
                 beep();
 
                 console.log("                \\         .  ./");
@@ -98,7 +97,11 @@ class Battleship {
             }
 
             if (hitShip) {
-                console.log(cliColor.green("Yeah ! Nice hit !⛴️💥"))
+                var hitIndex = this.enemyFleet.indexOf(hitShip);
+                console.log(cliColor.green(`Yeah ! Nice hit ${hitShip.name} !⛴️💥`))
+                if (this.enemyFleet[hitIndex].isDead()) {
+                    console.log(cliColor.red(`${hitShip.name} DESTROYED!!!!`))
+                }
             } else {
                 console.log(cliColor.yellow("Miss"))
             }
@@ -112,7 +115,11 @@ class Battleship {
 
             if (hitShip) {
                 gameController.DamageShip(this.myFleet, computerPos, hitShip);
-                console.log(cliColor.red(`Computer shot in ${computerPos.column}${computerPos.row} and has hit your ship ! 💣`))
+                console.log(cliColor.red(`Computer shot in ${computerPos.column}${computerPos.row} and has hit your ${hitShip.name} ! 💣`))
+                hitIndex = this.myFleet.indexOf(hitShip);
+                if (this.myFleet[hitIndex].isDead()) {
+                    console.log(cliColor.red(`${hitShip.name} DESTROYED!!!!`))
+                }
                 beep();
 
                 console.log("                \\         .  ./");
