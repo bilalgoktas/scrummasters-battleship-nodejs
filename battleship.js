@@ -68,7 +68,7 @@ class Battleship {
             console.log(cliColor.magenta("Player, it's your turn"))
             console.log(cliColor.magenta("Enter coordinates for your shot :"))
             var position;
-            
+
             try {
               position = Battleship.ParsePosition(readline.question());
 
@@ -167,10 +167,19 @@ class Battleship {
     }
 
     InitializeGame() {
+        this.myMap = {
+            "ships": [],
+            "hits": []
+        }
+        this.enemyMap = []
+
         this.InitializeBoard()
         // this.InitializeMyFleet();
         this.InitializeDebugPlayerFleet();
+        this.updateMap(this.myFleet, this.myMap)
+        this.showMap(this.myMap);
         this.InitializeEnemyFleet();
+        this.updateMap(this.myFleet,this.myMap);
     }
 
     InitializeBoard() {
@@ -194,14 +203,14 @@ class Battleship {
     clearReservedPositions(positions) {
         positions.forEach(({column, row}) => this.board[column.key][row] = false)
     }
-    
+
     InitializeMyFleet() {
         this.myFleet = gameController.InitializeShips();
 
         console.log('')
         console.log(cliColor.yellow('|||||| SETUP YOUR FLEET ⛴️ 🚢  |||||||'))
         console.log("Please position your fleet (Game board size is from A to H and 1 to 8) :");
-    
+
         this.myFleet.forEach(function (ship) {
             const reservedPositions = []
             console.log();
@@ -285,6 +294,51 @@ class Battleship {
         this.enemyFleet[4].addPosition(new position(letters.C, 6));
     }
 
+    showMap(map) {
+        let rows = 9
+        let columns = ['A', 'B', 'C', 'D', 'E','F', 'G'];
+        let renderMap = []
+
+        for (let i = 0; i < rows; i++) {
+
+            if (i === 0) {
+                renderMap.push(columns)
+            } else {
+                let temporaryRow = []
+                columns.forEach((column) => {
+
+                    let columnPosition = `${column}${i}`
+
+                    if (map.ships.indexOf(columnPosition) > -1) {
+
+                        temporaryRow.push("🟥")
+                        return
+                    }
+
+                    temporaryRow.push('🟦')
+                    // perform check if hit has been placed
+                    // Perform check if boat is on this spot
+                })
+                renderMap.push(temporaryRow)
+            }
+        }
+
+        console.table(renderMap)
+    }
+
+
+
+    updateMap(ships, map) {
+        ships.forEach(function(ship) {
+            // console.log(ship);
+            ship.positions.forEach(function(position) {
+                let letter = position.column.key
+                let row = position.row
+
+                map.ships.push(`${letter}${row}`)
+            });
+        })
+    }
 
 }
 
