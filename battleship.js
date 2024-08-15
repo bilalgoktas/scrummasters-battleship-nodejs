@@ -160,15 +160,19 @@ class Battleship {
     }
 
     InitializeGame() {
-        this.myMap = []
+        this.myMap = {
+            "ships": [],
+            "hits": []
+        }
         this.enemyMap = []
 
         this.InitializeBoard()
         // this.InitializeMyFleet();
         this.InitializeDebugPlayerFleet();
+        this.updateMap(this.myFleet, this.myMap)
+        this.showMap(this.myMap);
         this.InitializeEnemyFleet();
         this.updateMap(this.myFleet,this.myMap);
-        this.showMap(this.myMap);
     }
 
     InitializeBoard() {
@@ -286,40 +290,47 @@ class Battleship {
     showMap(map) {
         let rows = 9
         let columns = ['A', 'B', 'C', 'D', 'E','F', 'G'];
+        let renderMap = []
 
         for (let i = 0; i < rows; i++) {
 
             if (i === 0) {
-                map.push(columns)
+                renderMap.push(columns)
             } else {
                 let temporaryRow = []
-                columns.forEach((columns) => {
+                columns.forEach((column) => {
+
+                    let columnPosition = `${column}${i}`
+
+                    if (map.ships.indexOf(columnPosition) > -1) {
+
+                        temporaryRow.push("🟥")
+                        return
+                    }
+
                     temporaryRow.push('🟦')
                     // perform check if hit has been placed
                     // Perform check if boat is on this spot
                 })
-                map.push(temporaryRow)
+                renderMap.push(temporaryRow)
             }
         }
 
-        console.table(map)
+        console.table(renderMap)
     }
 
 
 
     updateMap(ships, map) {
-        // console.log(map);
         ships.forEach(function(ship) {
             // console.log(ship);
-            ship.positions.forEach(function(pos) {
-                // console.log(pos.column);
-                // console.log(letters.getValue(pos.column.value));
-                var col = letters.getValue(pos.column.value);
-                // console.log(map);
-                // map[pos.row][col] = '🚢';
+            ship.positions.forEach(function(position) {
+                let letter = position.column.key
+                let row = position.row
+
+                map.ships.push(`${letter}${row}`)
             });
         })
-        return map
     }
 
 }
