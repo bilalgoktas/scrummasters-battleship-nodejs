@@ -46,6 +46,7 @@ class GameController {
         });
         if (ships[isHitIndex].positions.length === hitCount) {
             ships[isHitIndex].kill();
+            console.log(`Destroyed ${ships[isHitIndex].name}!`);
         }
 
         return ships;
